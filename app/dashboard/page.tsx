@@ -1,11 +1,18 @@
 import { lusitana } from '@/app/ui/fonts';
-import { fetchCardData, fetchLatestInvoices, fetchRevenue } from '../lib/data';
+import { fetchCardData, fetchInvoicesPages, fetchLatestInvoices, fetchRevenue } from '../lib/data';
 import { Card } from '../ui/dashboard/cards';
 import LatestInvoices from '../ui/dashboard/latest-invoices';
 import RevenueChart from '../ui/dashboard/revenue-chart';
- 
-export default async function Page() {
 
+ 
+export default async function Page({
+  searchParams,
+}: {
+  searchParams?: {
+    query?: string,
+    page?: string,
+  },
+}) {
   const revenue = await fetchRevenue();
   const latestInvoices = await fetchLatestInvoices();
 
@@ -15,6 +22,11 @@ export default async function Page() {
     totalPaidInvoices,
     totalPendingInvoices,
   } = await fetchCardData();
+
+  const query = searchParams?.query || '';
+  const currentPage = Number(searchParams?.page) || 1;
+ 
+  const totalPages = await fetchInvoicesPages(query);
 
   return (
     <main>
