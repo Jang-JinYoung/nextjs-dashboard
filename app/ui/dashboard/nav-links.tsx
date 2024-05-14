@@ -18,6 +18,8 @@ export default function NavLinks() {
     },
     { name: 'Customers', href: '/dashboard/customers', icon: "UserGroupIcon" },
   ];
+
+  console.log("test");
  
   return (
     <>
