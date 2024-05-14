@@ -1,7 +1,7 @@
 import {
-  UserGroupIcon,
-  HomeIcon,
   DocumentDuplicateIcon,
+  HomeIcon,
+  UserGroupIcon,
 } from '@heroicons/react/24/outline';
 
 // Map of links to display in the side navigation.
@@ -19,7 +19,7 @@ const links = [
 export default function NavLinks() {
   return (
     <>
-      {links.map((link) => {
+      {/* {links.map((link) => {
         const LinkIcon = link.icon;
         return (
           <a
@@ -31,7 +31,7 @@ export default function NavLinks() {
             <p className="hidden md:block">{link.name}</p>
           </a>
         );
-      })}
+      })} */}
     </>
   );
 }
