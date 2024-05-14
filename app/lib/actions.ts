@@ -2,11 +2,11 @@
 
 import { sql } from '@vercel/postgres';
 
-/** 
+/**
  * @docs
  * https://nextjs.org/learn/dashboard-app/mutating-data
  * trigger a new server request and re-render the table.
-*/
+ */
 import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
 /**
@@ -19,22 +19,30 @@ import { redirect } from 'next/navigation';
 const FormSchema = z.object({
   id: z.string(),
   customerId: z.string(),
+  /* 
+    coerce.number string to number
+    example: 12 > "12"
+    coerce.string number to string
+    example: "12" > 12
+   */
   amount: z.coerce.number(),
   status: z.enum(['pending', 'paid']),
   date: z.string(),
 });
 
+/*
+  omit
+  id, date 생략
+  customerId, amount, status 반환
+*/
 const CreateInvoice = FormSchema.omit({ id: true, date: true });
 
-
 export async function createInvoice(formData: FormData) {
-
   const { customerId, amount, status } = CreateInvoice.parse({
     customerId: formData.get('customerId'),
     amount: formData.get('amount'),
     status: formData.get('status'),
   });
-
 
   const amountInCents = amount * 100;
   const date = new Date().toISOString().split('T')[0];
@@ -46,15 +54,6 @@ export async function createInvoice(formData: FormData) {
 
   revalidatePath('/dashboard/invoices');
   redirect('/dashboard/invoices');
-
-
-  //   const rawFormData = {
-  //     customerId: formData.get('customerId'),
-  //     amount: formData.get('amount'),
-  //     status: formData.get('status'),
-  //   };
-  // Test it out:
-  //   console.log(rawFormData);
 }
 
 const UpdateInvoice = FormSchema.omit({ id: true, date: true });
@@ -76,11 +75,10 @@ export async function updateInvoice(id: string, formData: FormData) {
 
   revalidatePath('/dashboard/invoices');
   redirect('/dashboard/invoices');
-};
+}
 
 export async function deleteInvoice(id: string) {
-  console.log(id);
-  const result = await sql`DELETE FROM invoices WHERE id = ${id}`;
-  console.log(result);
+  await sql`DELETE FROM invoices WHERE id = ${id}`;
+
   revalidatePath('/dashboard/invoices');
-};
+}
